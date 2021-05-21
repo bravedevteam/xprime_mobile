@@ -1,0 +1,259 @@
+<html>
+<head>
+  <title>XPrime</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <meta name="title" content="XPrime" />
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="XPrime">
+  <meta property="og:description" content="XPrime" />
+
+  <!-- TODO: library -->
+  <script src="./resources/js/lib/jquery.min.js"></script>
+  <script src="./resources/js/lib/jquery-ui.js"></script>
+  <link rel="stylesheet" href="./resources/css/lib/jquery-ui.css">
+  <!-- 1114 라이브러리 추가 -->
+  <script src="./resources/js/lib/slick.js"></script>
+  <link rel="stylesheet" href="./resources/css/lib/slick.css">
+
+  <!-- TODO: import -->
+  <link rel="stylesheet" href="./resources/css/lib/swiper.min.css">
+  <script src="./resources/js/lib/swiper.min.js"></script>
+  <link rel="stylesheet" href="./resources/css/style.css" type="text/css">
+  <script src="./resources/js/scripts.js"></script>
+  <script type="text/javascript" src="./resources/js/util.js"></script>
+
+  <!--[if lt IE 9]>
+  <script src="./resources/js/lib/html5shiv.js"></script>
+  <script src="./resources/js/lib/placeholders.js"></script>
+  <![endif]-->
+
+  <!-- JSTL -->
+</head>
+<script type="text/javascript">
+  $(function () {
+    modalUi();
+    var id = getCookie("primeId");
+    if (id != undefined && id != '') {
+      var pw = getCookie("primePassword");
+      $('#userId').val(id);
+      $('#userPw').val(pw);
+      $('#remember').attr('checked', true);
+    } else {
+      $('#remember').attr('checked', false);
+    }
+  });
+
+  /**
+   * 모바일 기기 FCM 토큰 요청
+   */
+  function reqMobilePushToken() {
+    var pushToken = "";
+    var isLogin = false;
+
+    //모바일 기종 체크
+    var mobileArr = new Array("iPhone", "iPod", "BlackBerry", "Android", "Windows CE", "LG", "MOT", "SAMSUNG",
+      "SonyEricsson");
+    for (var txt in mobileArr) {
+      if (navigator.userAgent.match(mobileArr[txt]) != null) {
+        if ("Android".match(mobileArr[txt])) {
+          // 안드로이드 접속 처리
+          // pushToken = Android.getFCMToken();
+          isLogin = true;
+          sendLogin('pushToken', "AOS");
+          break;
+        } else if ('iPhone'.match(mobileArr[txt])) {
+          // iOS 푸시토큰 요청
+          isLogin = true;
+          // webkit.messageHandlers.getFCMToken.postMessage('resp:sendLogin');
+          sendLogin('pushToken', "IOS");
+          break;
+        }
+      }
+    }
+    if (!isLogin) {
+      sendLogin('', '');
+    }
+  }
+
+  /**
+   * 로그인 요청
+   */
+  function sendLogin(pushToken, os) {
+    var id = $('#userId').val();
+    var pw = $('#userPw').val();
+    if (validateUserInfo()) {
+      $.ajax({
+        type: 'POST',
+        url: '/login',
+        data: {
+          "userId": id,
+          "userPassword": pw,
+          "os": os,
+          "pushToken": pushToken
+        },
+        dataType: 'json',
+        success: function (res) {
+          if (ajaxResponse(res) && res.body.result == '0000') {
+            // 로그인 성공 && 아이디 비번 저장 시
+            if ($("input:checkbox[id='remember']").is(":checked")) {
+              updateCookie("primeId", id, 10);
+              updateCookie("primePassword", pw, 10);
+            } else {
+              removeCookie("primeId");
+              removeCookie("primePassword");
+            }
+            window.location = '/main';
+          } else {
+            removeCookie("primeId");
+            removeCookie("primePassword");
+            // 로그인 실패
+            var message = $('#message');
+            var html = '<p>';
+            html += res.body.message;
+            html += '</p>'
+            message.html(html);
+            $('#error').trigger("click");
+          }
+        },
+        error: function (error) {
+          showErrorPopup('Error : 관리자에게 문의하세요');
+        }
+      })
+    }
+  }
+
+  /**
+   * 로그인 유효성 검사
+   */
+  function validateUserInfo() {
+    var id = $('#userId').val();
+    var pw = $('#userPw').val();
+    var message = $('#message');
+    var html = '<p>';
+    if (isEmpty(id)) {
+      html += '이메일을 입력하세요';
+      html += '</p>';
+      message.html(html);
+      $('#error').trigger("click");
+      return false;
+    } else if (isEmpty(pw)) {
+      html += '비밀번호를 입력하세요';
+      html += '</p>';
+      message.html(html);
+      $('#error').trigger("click");
+      return false;
+    } else if (!isEmail(id)) {
+      html += '이메일 형식에 맞게 입력하세요';
+      html += '</p>';
+      message.html(html);
+      $('#error').trigger("click");
+      return false;
+    } else {
+      return true;
+    }
+  }
+</script>
+
+<body class="white">
+  <div id="wrap">
+    <header>
+      <div class="app-inner">
+        <h1 class="logo"><a href="/main">XPrime</a></h1>
+      </div>
+    </header>
+
+    <div id="container">
+      <section class="app-section">
+        <div class="app-inner">
+
+          <div class="info-container vertical-layout">
+            <div class="vertical-layout-inner">
+              <h3 class="login">LOGIN</h3>
+              <p>회원님, 계정에 로그인 하세요.</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <form action="">
+              <div class="input">
+                <label for="userId">이메일 주소</label>
+                <input id="userId" type="text" name="userId" value="" placeholder="e-mail">
+              </div>
+
+              <div class="input">
+                <label for="userPw">비밀번호</label>
+                <input id="userPw" type="password" name="userPassword" value="" placeholder="password">
+              </div>
+
+              <div class="button">
+                <a class="btn" href="javascript:reqMobilePushToken()">로그인</a>
+              </div>
+            </form>
+          </div>
+
+          <div class="nav-side">
+            <ul>
+              <!-- 1212 추가 -->
+              <li>
+                <div class="check">
+                  <input id="remember" type="checkbox" name="" value="">
+                  <label for="remember">아이디 / 비번 저장하기</label>
+                </div>
+              </li>
+              <!-- 1212 추가 e-->
+            </ul>
+          </div>
+
+          <!-- 1112 수정 -->
+          <div class="btm-container">
+            <div class="button row center">
+              <a class="btn small" href="/join">회원가입</a>
+              <a class="btn small" href="/forgotPassword">비밀번호 찾기</a>
+            </div>
+          </div>
+
+          <a class="agree-btn modalLoad" href="#congratulations" style="display: none" id="error"> error 창 </a>
+
+        </div>
+      </section>
+    </div>
+    <!-- .#container e -->
+  </div>
+  <!-- #wrap e -->
+  <div class="modal" id="congratulations">
+    <div class="modal-inner">
+      <div class="modal-header">
+        <p>
+          <img src="./resources/images/img-notice.png" alt="" style="width:17px;height:17px;">
+          <em class="red">Notice</em>
+        </p>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-cont" id="message">
+          <p>
+            This CFD Product is upcoming.<br />
+            Please wait this Product.
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="row">
+          <div class="column">
+            <a class="btn negative ok-hide" href="#">OK</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-controller">
+        <a href="#" class="ico ico-close">close</a>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

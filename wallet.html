@@ -1,0 +1,172 @@
+<html lang="ko">
+
+<head>
+	<title>XPrime</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<meta name="title" content="XPrime" />
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="XPrime">
+	<meta property="og:description" content="XPrime" />
+
+	<!-- TODO: library -->
+	<script src="./resources/js/lib/jquery.min.js"></script>
+	<script src="./resources/js/lib/jquery-ui.js"></script>
+	<link rel="stylesheet" href="./resources/css/lib/jquery-ui.css">
+	<!-- 1114 라이브러리 추가 -->
+	<script src="./resources/js/lib/slick.js"></script>
+	<link rel="stylesheet" href="./resources/css/lib/slick.css">
+
+	<!-- TODO: import -->
+	<link rel="stylesheet" href="./resources/css/lib/swiper.min.css">
+	<script src="./resources/js/lib/swiper.min.js"></script>
+	<link rel="stylesheet" href="./resources/css/style.css" type="text/css">
+	<script src="./resources/js/scripts.js"></script>
+	<script type="text/javascript" src="./resources/js/util.js"></script>
+
+	<!--[if lt IE 9]>
+<script src="./resources/js/lib/html5shiv.js"></script>
+<script src="./resources/js/lib/placeholders.js"></script>
+<![endif]-->
+
+	<!-- JSTL -->
+</head>
+
+<body>
+	<div id="wrap">
+		<header>
+      <div class="app-inner">
+        <h1 class="logo"><a href="/main">XPrime</a></h1>
+				<a class="btn-gnb" href="#">Mypage</a>
+      </div>
+
+			<div class="gnb-container">
+				<div class="gnb-header">
+					<div class="user-info">
+						안녕하세요!<br />
+						<span class="user-account">test@pocketmobile.co.kr</span> 님
+					</div>
+					<div class="user-modify">
+						<div>보안 <span>1레벨</span></div>
+						<a href="/account">정보수정</a>
+					</div>
+					<div class="nav-ctl">
+						<a class="ico ico-close" href="#" id="close_btn">Close</a>
+					</div>
+				</div>
+				<div class="gnb-body">
+					<ul class="menu">
+						<li><a href="#">서비스 이용약관</a></li>
+						<li><a href="#">개인정보 보호 정책</a></li>
+					</ul>
+				</div>
+				<div class="gnb-footer">
+					<a href="/logout" class="logout">로그아웃</a>
+					<a href="/support?type=1" class="customer">Xprime customer center</a>
+				</div>
+			</div>
+    </header>
+		<div id="container">
+			<section class="app-section white myAsset">
+				<div class="info-container vertical-layout">
+					<div class="vertical-layout-inner">
+						<h3>나의 자산 현황</h3>
+						<span class="number">2,075,202.88<span>USD</span></span>
+					</div>
+				</div>
+			</section>
+
+			<section class="app-section wide fixed-cont">
+				<!-- img inline으로 width 지정하여 load
+				카드전체 클릭과 버튼 클릭의 구분으로인하여 table 태그가 아닌
+				list 퍼블리싱으로 셀의 너비를 %로 직접계산식으로 진행.
+				inline style 의 width값 까지 같이 불러와주시면 됩니다.
+			-->
+				<div class="coinassets-list">
+					<div class="coinassets-list-body" id="wallet_list">
+						<ul>
+
+							<li>
+								<a class="coinassets-list-link" href="/wallet/detail?coinSymbol=BTC&type=0" style="width:75%">
+									<div class="img-txt">
+										<img src="./resources/images/img-bitcoin.png" alt="" style="width:24px;">BTC
+									</div>
+									<span>99.9<em>BTC</em></span>
+									<span>1,045,872.06<em>USD</em></span>
+								</a>
+								<div class="like-td center" style="width:25%">
+									<a class="btn" href="/wallet/detail?coinSymbol=BTC&type=1">입금</a>
+									<a class="btn" href="javascript:checkLevel('/wallet/detail?coinSymbol=BTC&type=2')">출금</a>
+								</div>
+							</li>
+
+							<li>
+								<a class="coinassets-list-link" href="/wallet/detail?coinSymbol=CUST&type=0" style="width:75%">
+									<div class="img-txt">
+										<img src="./resources/images/img-custodytoken.png" alt="" style="width:24px;">CUST
+									</div>
+									<span>100,000<em>CUST</em></span>
+									<span>144.9<em>USD</em></span>
+								</a>
+								<div class="like-td" style="width:25%">
+									<a class="btn" href="/wallet/detail?coinSymbol=CUST&type=1">입금</a>
+									<a class="btn" href="javascript:checkLevel('/wallet/detail?coinSymbol=CUST&type=2')">출금</a>
+								</div>
+							</li>
+
+							<li>
+								<a class="coinassets-list-link" href="/wallet/detail?coinSymbol=XTX&type=0" style="width:75%">
+									<div class="img-txt">
+										<img src="./resources/images/img-xtx.png" alt="" style="width:24px;">XTX
+									</div>
+									<span>1,2323413241<em>XTX</em></span>
+									<span>100,000<em>USD</em></span>
+								</a>
+								<div class="like-td center" style="width:25%">
+									<a class="btn" href="/wallet/detail?coinSymbol=USDT&type=1">입금</a>
+									<a class="btn" href="javascript:checkLevel('/wallet/detail?coinSymbol=USDT&type=2')">출금</a>
+								</div>
+							</li>
+
+							<li>
+								<a class="coinassets-list-link" href="/wallet/detail?coinSymbol=RNX&type=0" style="width:75%">
+									<div class="img-txt">
+										<img src="./resources/images/img-rnx.png" alt="" style="width:24px;">RNX
+									</div>
+									<span>100,000<em>RNX</em></span>
+									<span>58.1<em>USD</em></span>
+								</a>
+								<div class="like-td center" style="width:25%">
+									<a class="btn" href="/wallet/detail?coinSymbol=RNX&type=1">입금</a>
+									<a class="btn" href="javascript:checkLevel('/wallet/detail?coinSymbol=RNX&type=2')">출금</a>
+								</div>
+							</li>
+
+							<li>
+								<a class="coinassets-list-link" href="/wallet/detail?coinSymbol=GCV&type=0" style="width:75%">
+									<div class="img-txt">
+										<img src="./resources/images/img-fxt.png" alt="" style="width:24px;">FXT
+									</div>
+									<span>1,2323413241<em>FXT</em></span>
+									<span>234,567,134<em>USD</em></span>
+								</a>
+								<div class="like-td center" style="width:25%">
+									<a class="btn" href="/wallet/detail?coinSymbol=GCV&type=1">입금</a>
+									<a class="btn" href="javascript:checkLevel('/wallet/detail?coinSymbol=GCV&type=2')">출금</a>
+								</div>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+			</section>
+		</div>
+		<!-- .#container e -->
+	</div>
+
+	
+</body>
+
+</html>
