@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>XPrime</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <meta name="title" content="XPrime" />
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="XPrime">
+  <meta property="og:description" content="XPrime" />
+
+  <!-- TODO: library -->
+  <script src="./resources/js/lib/jquery.min.js"></script>
+  <script src="./resources/js/lib/jquery-ui.js"></script>
+  <link rel="stylesheet" href="./resources/css/lib/jquery-ui.css">
+  <!-- 1114 라이브러리 추가 -->
+  <script src="./resources/js/lib/slick.js"></script>
+  <link rel="stylesheet" href="./resources/css/lib/slick.css">
+
+  <!-- TODO: import -->
+  <link rel="stylesheet" href="./resources/css/lib/swiper.min.css">
+  <script src="./resources/js/lib/swiper.min.js"></script>
+  <link rel="stylesheet" href="./resources/css/style.css" type="text/css">
+  <script src="./resources/js/scripts.js"></script>
+  <script type="text/javascript" src="./resources/js/util.js"></script>
+
+  <!--[if lt IE 9]>
+  <script src="./resources/js/lib/html5shiv.js"></script>
+  <script src="./resources/js/lib/placeholders.js"></script>
+  <![endif]-->
+  <!-- JSTL -->
+</head>
+<script type="text/javascript">
+  /**
+   * 페이지 로드시 처리해야할 스크립트 정의
+   */
+  $(function () {
+    includeLayout();
+  })
+
+  function includeLayout() {
+    var includeArea = $('[data-include]');
+    var self, url;
+    $.each(includeArea, function () {
+      self = $(this);
+      url = self.data("include");
+      self.load(url, function () {
+        self.removeAttr("data-include");
+      });
+    });
+  }
+
+  /**
+   * 화면 이동
+   * @param url 이동할 url
+   */
+  function moveUrl(url) {
+    window.location = url;
+  }
+
+  function sendKyc() {
+    if (validateKyc()) {
+      var frm = document.getElementById('kyc_form');
+      frm.method = "POST";
+      frm.enctype = "multipart/form-data";
+      var formData = new FormData(frm);
+
+      // loading
+      // openLoadingPopup();
+      $.ajax({
+        type: "POST",
+        enctype: "multipart/form-data",
+        url: "/verify/kyc",
+        data: formData,
+        // async: false,
+        // cache: false,
+        contentType: false,
+        processData: false,
+        timeout: 15000,
+        success: function (data) {
+          // $('#mask').remove();
+          if (ajaxResponse(data)) {
+            if (data.body) {
+              showSuccessPopup("Individual Info", "Identity Verify application completed.");
+              $('#ok_popup_confirm').click(function () {
+                moveUrl('/verify');
+              })
+            } else {
+              showErrorPopup("invalid reCaptcha response value.");
+            }
+          }
+        },
+        error: function (request, status, error) {
+          // $('#mask').remove();
+          showErrorPopup('Error : 관리자에게 문의하세요');
+        }
+      });
+    }
+  }
+
+  /**
+   * 입력값 유효성 검사
+   * @returns {boolean} 성공
+   */
+  function validateKyc() {
+    var firstName = $('#user_first_name').val();
+    var lastName = $('#user_last_name').val();
+    var country = $('select[name="country"]').val()
+    var gender = $('select[name="userGender"]').val();
+    var birth = $('#dateOfBirth').val();
+    var passport = document.getElementById("passport").value;
+    var passportSelf = document.getElementById("passport_self").value;
+    if (!firstName) {
+      showErrorPopup("Please enter firstName")
+      return false;
+    } else if (!lastName) {
+      showErrorPopup("Please enter lastName");
+      return false;
+    } else if (!country) {
+      showErrorPopup("Please select country");
+      return false;
+    } else if (!gender) {
+      showErrorPopup("Please select gender");
+      return false;
+    } else if (!birth) {
+      showErrorPopup("Please enter birth");
+      return false;
+    } else if (!passport) {
+      showErrorPopup("Please select passport");
+      return false;
+    } else if (!passportSelf) {
+      showErrorPopup("Please select passportSelf");
+      return false;
+    }
+    return true;
+  }
+
+  function previewImage(file, type) {
+    var fileList = file.files;
+    // Read
+    var reader = new FileReader();
+    reader.readAsDataURL(fileList[0]);
+    // load
+    reader.onload = function () {
+      if (type == 1) {
+        $('#passport_img').attr('src', reader.result);
+      } else {
+        $('#passportSelf_img').attr('src', reader.result);
+      }
+    }
+  }
+</script>
+
+<body>
+  <div id="wrap">
+    <header>
+      <div class="app-inner">
+        <div class="cont-operation">
+          <p class="txt-intro">
+            <a href="javascript:moveUrl('/verify')">
+              <span class="ico ico-back">back</span>
+            </a>
+          </p>
+        </div>
+        <a class="btn-gnb" href="#">Menu</a>
+      </div>
+      <!-- gnb 화면 -->
+
+      <script type="text/javascript">
+        $(function () {
+          modalUi();
+        })
+
+        function loginOut() {
+          window.location = "/logout";
+        }
+
+        function checkLevel(url) { //  UserVO vo = (UserVO)session.getAttribute("LOGIN");
+          $('#close_btn').trigger("click");
+          var level = "1";
+          var move = false;
+          if (level == '2') {
+            move = true;
+          }
+          if (move) {
+            if (!isEmpty(url)) {
+              window.location = url;
+            }
+          } else {
+            //alert('Please complete Lv.2 verification for using this service');
+            //이동 실패
+            var message = $('#message');
+            var html = '<p>';
+            html += '보안레벨 2단계 인증을 완료해야 출금이 가능합니다.';
+            html += '</p>';
+            message.html(html);
+            $('#error').trigger("click");
+          }
+        }
+
+        function checkLevel1(url, returnUrl) {
+          $('#close_btn').trigger("click");
+          var level = "1";
+          var move = false;
+          if (level == '2') {
+            move = true;
+          }
+          if (move) {
+            if (!isEmpty(url)) {
+              window.location = url;
+            }
+          } else {
+            //alert('Please complete Lv.2 verification for using this service');
+            //이동 실패
+            var message = $('#message');
+            var html = '<p>';
+            html += '보안레벨 2단계 인증을 완료해야 출금이 가능합니다.';
+            html += '</p>';
+            message.html(html);
+            $('.ok-hide').attr('onclick', 'location.href="' + returnUrl + '"');
+            $('#error').trigger("click");
+          }
+        }
+
+        /**
+         * 에러 팝업 생성
+         * @param msg
+         */
+        function showErrorPopup(msg) {
+          //alert('Please complete Lv.2 verification for using this service');
+          $('#modal-message').text(msg);
+          $('#error').trigger("click");
+        }
+
+        function showSuccessPopup(title, msg) {
+          $('#ok_title').text(title);
+          $('#ok_message').text(msg);
+          $('#show_ok').trigger("click");
+        }
+      </script>
+      <div class="gnb-container">
+				<div class="gnb-header">
+					<div class="user-info">
+						안녕하세요!<br />
+						<span class="user-account">test@pocketmobile.co.kr</span> 님
+					</div>
+					<div class="user-modify">
+						<div>보안 <span>1레벨</span></div>
+						<a href="/account">정보수정</a>
+					</div>
+					<div class="nav-ctl">
+						<a class="ico ico-close" href="#" id="close_btn">Close</a>
+					</div>
+				</div>
+				<div class="gnb-body">
+					<ul class="menu">
+						<li><a href="#">서비스 이용약관</a></li>
+						<li><a href="#">개인정보 보호 정책</a></li>
+					</ul>
+				</div>
+				<div class="gnb-footer">
+					<a href="/logout" class="btn gray">로그아웃</a>
+					<a href="/support?type=1" class="customer">Xprime customer center</a>
+				</div>
+			</div>
+      <a class="agree-btn modalLoad" href="#error_popup" style="display: none" id="error"> test</a>
+      <a class="agree-btn modalLoad" href="#ok_popup" style="display: none" id="show_ok"> test</a>
+      <!-- #wrap e -->
+      <!-- error popup -->
+      <div class="modal" id="error_popup">
+        <div class="modal-inner">
+          <div class="modal-header">
+            <p>
+              <img src="./resources/images/img-notice.png" alt="" style="width:17px;height:17px;bottom:0px">
+              <em class="red">Notice</em>
+            </p>
+          </div>
+
+          <div class="modal-body">
+            <div class="modal-cont" id="message">
+              <p id="modal-message">
+                This CFD Product is upcoming.<br />
+                Please wait this Product.
+              </p>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <div class="row">
+              <div class="column">
+                <a class="btn negative ok-hide" href="#">OK</a>
+              </div>
+            </div>
+          </div>
+          <div class="modal-controller">
+            <a href="#" class="ico ico-close">close</a>
+          </div>
+        </div>
+      </div>
+      <!-- one button confirm popup -->
+      <div class="modal" id="ok_popup">
+        <div class="modal-inner">
+          <div class="modal-header">
+            <p>
+              <em class="blue" id="ok_title">Change Your Password</em>
+            </p>
+          </div>
+
+          <div class="modal-body">
+            <div class="modal-cont">
+              <p id="ok_message">
+              </p>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <div class="row">
+              <div class="column">
+                <a class="btn ico-close" href="#" id="ok_popup_confirm">OK</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div id="container">
+      <section class="app-section white">
+        <form id="kyc_form" name="kyc_form" method="post" enctype="multipart/form-data" data-ajax="false">
+          <div class="app-inner app-block">
+            <div class="info-container vertical-layout">
+              <div class="vertical-layout-inner">
+                <h3 class="kyc">KYC 인증</h3>
+                <p>KYC 실명인증을 진행하세요!</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-line">
+                <div class="input">
+                  <label>이름(여권정보 기준)</label>
+                  <div class="row">
+                    <div class="column">
+                      <input id="user_first_name" type="text" name="userFirstName" value="" placeholder="이름(영문)">
+                    </div>
+                    <div class="column">
+                      <input id="user_last_name" type="text" name="userLastName" value="" placeholder="성(영문)">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="input">
+                  <label>국적선택</label>
+                  <div role="Nationality" data-include="./resources/html/nationality.html"></div>
+                  <div class="column">
+                    <input id="country" type="hidden" name="userNationality" value="" placeholder="Nationality">
+                  </div>
+                </div>
+
+                <div class="input">
+                  <label>성별 / 생일</label>
+                  <div class="row">
+                    <div class="column">
+                      <select name="userGender">
+                        <option value="">성별</option>
+                        <option value="M">남성</option>
+                        <option value="F">여성</option>
+                      </select>
+                    </div>
+                    <div class="column">
+                      <div class="icon-input">
+                        <input id="dateOfBirth" class="datepicker" name="userBirth" type="text" placeholder="생일">
+                        <label class="ico ico-calendar" for="dateOfBirth">selecting date</label>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="input">
+                  <label>여권정보</label>
+                  <div class="row">
+                    <div class="column">
+                      <input id="passport_number" type="text" name="passportNumber" value="" placeholder="여권번호">
+                    </div>
+                    <div class="column">
+                      <div class="icon-input">
+                        <input id="expiredDate" class="datepicker" type="text" placeholder="여권 만료일"
+                          name="passportExpiration">
+                        <label class="ico ico-calendar" for="expiredDate">selecting date</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 사진 업로드 -->
+          <div class="app-inner app-article">
+            <div class="form-group">
+              <h3 class="txt-tit-ipt">여권사진 업로드</h3>
+              <div class="passport-list">
+                <div class="photo type1">
+                  <input type="file" name="passport" id="passport" class="input-file"
+                          onchange="previewImage(this,1);">
+                  <label for="passport" class="js-labelFile">
+                    <span class="js-fileName" id="passport_upload">업로드</span>
+                  </label>
+
+                  <div class="upload-preview">
+                    <img src="./resources/images/passport.png" alt="업로드된 사진" id="passport_img">
+                  </div>
+                </div>
+                <div class="cont">
+                  <div class="title">여권 앞면 사진</div>
+                  <div class="dec">여권 앞면사진을 업로드해 주세요.<br />사진중 회원의 얼굴 및 여권정보가 선명하게 보이도록 촬영해주세요</div>
+                </div>
+              </div>
+
+              <div class="passport-list">
+                <div class="photo type2">
+                  <input type="file" name="passportSelf" id="passport_self" class="input-file"
+                          onchange="previewImage(this,2);">
+                  <label for="passport_self" class="js-labelFile">
+                    <span class="js-fileName" id="passport_self_upload">업로드</span>
+                  </label>
+
+                  <div class="upload-preview">
+                    <img src="./resources/images/passport.png" alt="업로드된 사진" id="passport_img">
+                  </div>
+                </div>
+                <div class="cont">
+                  <div class="title">여권을 들고있는 본인사진</div>
+                  <div class="dec">여권을 든 본인사진을 업로드해 주세요.<br />사진중 회원의 얼굴 및 여권정보가 선명하게 보여야 하며 선글라스나 모자를 쓸 경우 신청에 반려될 수 있습니다.</div>
+                </div>
+              </div>
+
+              <script>
+                // 이곳에 조건 및 추가 UI를 작성하세요.
+                (function () {
+                  $('.input-file').each(function () {
+                    var $input = $(this),
+                      $label = $input.next('.js-labelFile'),
+                      labelVal = $label.html();
+
+                    $input.on('change', function (element) {
+                      var fileName = '';
+                      if (element.target.value) fileName = element.target.value.split('\\').pop();
+                      fileName ? $label.addClass('has-file').find('.js-fileName').html(fileName) :
+                        $label.removeClass('has-file').html(labelVal);
+                      $(this).parent().addClass("is-change");
+                    });
+                  });
+
+                })();
+              </script>
+            </div>
+            <div class="button">
+              <button type="button" class="btn" onclick="sendKyc()">인증하기</button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+</body>
+
+</html>

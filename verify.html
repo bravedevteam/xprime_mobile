@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <title>XPrime</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <meta name="title" content="XPrime" />
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="XPrime">
+  <meta property="og:description" content="XPrime" />
+
+  <!-- TODO: library -->
+  <script src="./resources/js/lib/jquery.min.js"></script>
+  <script src="./resources/js/lib/jquery-ui.js"></script>
+  <link rel="stylesheet" href="./resources/css/lib/jquery-ui.css">
+  <!-- 1114 라이브러리 추가 -->
+  <script src="./resources/js/lib/slick.js"></script>
+  <link rel="stylesheet" href="./resources/css/lib/slick.css">
+
+  <!-- TODO: import -->
+  <link rel="stylesheet" href="./resources/css/lib/swiper.min.css">
+  <script src="./resources/js/lib/swiper.min.js"></script>
+  <link rel="stylesheet" href="./resources/css/style.css" type="text/css">
+  <script src="./resources/js/scripts.js"></script>
+  <script type="text/javascript" src="./resources/js/util.js"></script>
+
+  <!--[if lt IE 9]>
+  <script src="./resources/js/lib/html5shiv.js"></script>
+  <script src="./resources/js/lib/placeholders.js"></script>
+  <![endif]-->
+
+  <!-- JSTL -->
+</head>
+<script type="text/javascript">
+  /**
+   * 페이지 로드시 처리해야할 스크립트 정의
+   */
+  $(function () {
+    // setButton();
+  })
+
+  function setButton() {
+    var otpCode = 'u4EHBSqukNtAskYKPhEgr9I3afmWL9XSKiFdBmDc8Tg=';
+    var securityCode = '/vBWeIGnycj8P41dWMT/Wg==';
+    var userName = '';
+    var userLevel = '1';
+    if (!otpCode) {
+      $('#security_btn').prop("disabled", true);
+      $('#kyc_btn').prop("disabled", true);
+    } else if (!securityCode) {
+      $('#kyc_btn').prop("disabled", true);
+    }
+  }
+  /**
+   * 화면 이동
+   * @param url 이동할 url
+   */
+  function moveUrl(url) {
+    window.location = url;
+  }
+</script>
+
+<body>
+  <div id="wrap">
+    <header>
+      <div class="app-inner transparent">
+        <div class="cont-operation">
+          <p class="txt-intro">
+            <a href="javascript:historyBack()">
+              <span class="ico ico-back">back</span>
+            </a>
+          </p>
+        </div>
+      </div>
+      <!-- gnb 화면 -->
+
+      <script type="text/javascript">
+        $(function () {
+          modalUi();
+        })
+
+        function loginOut() {
+          window.location = "/logout";
+        }
+
+        function checkLevel(url) { //  UserVO vo = (UserVO)session.getAttribute("LOGIN");
+          $('#close_btn').trigger("click");
+          var level = "1";
+          var move = false;
+          if (level == '2') {
+            move = true;
+          }
+          if (move) {
+            if (!isEmpty(url)) {
+              window.location = url;
+            }
+          } else {
+            //alert('Please complete Lv.2 verification for using this service');
+            //이동 실패
+            var message = $('#message');
+            var html = '<p>';
+            html += '보안레벨 2단계 인증을 완료해야 출금이 가능합니다.';
+            html += '</p>';
+            message.html(html);
+            $('#error').trigger("click");
+          }
+        }
+
+        function checkLevel1(url, returnUrl) {
+          $('#close_btn').trigger("click");
+          var level = "1";
+          var move = false;
+          if (level == '2') {
+            move = true;
+          }
+          if (move) {
+            if (!isEmpty(url)) {
+              window.location = url;
+            }
+          } else {
+            //alert('Please complete Lv.2 verification for using this service');
+            //이동 실패
+            var message = $('#message');
+            var html = '<p>';
+            html += '보안레벨 2단계 인증을 완료해야 출금이 가능합니다.';
+            html += '</p>';
+            message.html(html);
+            $('.ok-hide').attr('onclick', 'location.href="' + returnUrl + '"');
+            $('#error').trigger("click");
+          }
+        }
+
+        /**
+         * 에러 팝업 생성
+         * @param msg
+         */
+        function showErrorPopup(msg) {
+          //alert('Please complete Lv.2 verification for using this service');
+          $('#modal-message').text(msg);
+          $('#error').trigger("click");
+        }
+
+        function showSuccessPopup(title, msg) {
+          $('#ok_title').text(title);
+          $('#ok_message').text(msg);
+          $('#show_ok').trigger("click");
+        }
+      </script>
+      <a class="agree-btn modalLoad" href="#error_popup" style="display: none" id="error"> test</a>
+      <a class="agree-btn modalLoad" href="#ok_popup" style="display: none" id="show_ok"> test</a>
+      <!-- #wrap e -->
+      <!-- error popup -->
+      <div class="modal" id="error_popup">
+        <div class="modal-inner">
+          <div class="modal-header">
+            <p>
+              <img src="./resources/images/img-notice.png" alt="" style="width:17px;height:17px;bottom:0px">
+              <em class="red">Notice</em>
+            </p>
+          </div>
+
+          <div class="modal-body">
+            <div class="modal-cont" id="message">
+              <p id="modal-message">
+                This CFD Product is upcoming.<br />
+                Please wait this Product.
+              </p>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <div class="row">
+              <div class="column">
+                <a class="btn negative ok-hide" href="#">OK</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-controller">
+            <a href="#" class="ico ico-close">close</a>
+          </div>
+        </div>
+      </div>
+      <!-- one button confirm popup -->
+      <div class="modal" id="ok_popup">
+        <div class="modal-inner">
+          <div class="modal-header">
+            <p>
+              <em class="blue" id="ok_title">Change Your Password</em>
+            </p>
+          </div>
+
+          <div class="modal-body">
+            <div class="modal-cont">
+              <p id="ok_message">
+              </p>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <div class="row">
+              <div class="column">
+                <a class="btn ico-close" href="#" id="ok_popup_confirm">OK</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div id="container">
+      <section class="app-section">
+        <h3 class="verification-tit">test@pocketmobile.co.kr 님<br /><span>보안등급 <em class="green">1레벨</em></span></h3>
+        <div class="app-inner app-article">
+          <div class="verification-list">
+            <ul>
+              <!-- 각 레벨별 진행도에 따라 on 클래스 추가로 활성화 -->
+              <li class="lv lv1 on">
+                <div class="titVerification">보안 <span>1레벨</span></div>
+                <dl>
+                  <dt>이메일 인증</dt>
+                  <dd>test@pocketmobile.co.kr</dd>
+                </dl>
+                <span class="txt-status completed">
+                  완료
+                </span>
+              </li>
+              <li class="lv lv2">
+                <div class="titVerification">보안 <span>2레벨</span></div>
+                <dl>
+                  <dt>OTP 설정</dt>
+                  <dd>Google OTP</dd>
+                </dl>
+                <a class="btn small" href="javascript:moveUrl('/verify/otp')">설정하기</a>
+              </li>
+              <li class="lv lv3">
+                <div class="titVerification">보안 <span>3레벨</span></div>
+                <dl>
+                  <dt>KYC 실명인증</dt>
+                  <dd>여권 & 본인사진 업로드</dd>
+                </dl>
+                <a class="btn small" href="javascript:moveUrl('/verify/kyc')" id="kyc_btn">설정하기</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+
+</html>

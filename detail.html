@@ -1,0 +1,551 @@
+<html lang="ko">
+<head>
+  <title>XPrime</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <meta name="title" content="XPrime" />
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="XPrime">
+  <meta property="og:description" content="XPrime" />
+
+  <!-- TODO: library -->
+  <script src="./resources/js/lib/jquery.min.js"></script>
+  <script src="./resources/js/lib/jquery-ui.js"></script>
+  <link rel="stylesheet" href="./resources/css/lib/jquery-ui.css">
+  <!-- 1114 라이브러리 추가 -->
+  <script src="./resources/js/lib/slick.js"></script>
+  <link rel="stylesheet" href="./resources/css/lib/slick.css">
+
+  <!-- TODO: import -->
+  <link rel="stylesheet" href="./resources/css/lib/swiper.min.css">
+  <script src="./resources/js/lib/swiper.min.js"></script>
+  <link rel="stylesheet" href="./resources/css/style.css" type="text/css">
+  <script src="./resources/js/scripts.js"></script>
+  <script type="text/javascript" src="./resources/js/util.js"></script>
+
+  <!--[if lt IE 9]>
+  <script src="./resources/js/lib/html5shiv.js"></script>
+  <script src="./resources/js/lib/placeholders.js"></script>
+  <![endif]-->
+
+  <!-- JSTL -->
+</head>
+<script type="text/javascript">
+  /**
+   * 페이지 로드시 처리해야할 스크립트 정의
+   */
+  $(function () {
+    modalUi();
+    // 숫자만 입력
+    $("input:text[numberOnly]").on("keyup", function (event) {
+      $(this).val($(this).val().replace(/[^0-9]/g, ""));
+    });
+    openClick();
+    //출금 최대값 체크
+    $('#withdrawal_amount').on("change paste keyup", function () {
+      var amount = $(this).val();
+      var allAmount = 99.899;
+      if (amount > allAmount) {
+        amount = allAmount;
+      }
+      $(this).val(amount);
+    })
+
+    setSearchValue();
+  });
+
+  /**
+   * 마지막 검색값
+   */
+  function setSearchValue() {
+    if ('' != '') {
+      $('#sel_tranType').val('').prop("selected", true);
+    }
+    if ('' != '') {
+      $('#sel_tranStatus').val('').prop("selected", true);
+    }
+  }
+
+  /**
+   * 출금 등록
+   */
+  function withdrawCoin() {
+    if (validateWithdraw()) {
+      $.ajax({
+        type: 'POST',
+        url: '/wallet/withdraw',
+        data: $('#withdraw_frm').serialize(),
+        dataType: 'json',
+        success: function (res) {
+          if (ajaxResponse(res) && res.body.result == '0000') {
+            alert(res.body.message);
+            moveUrl('/wallet');
+          } else {
+            //에러 노출
+            alert(res.body.message);
+          }
+        },
+        error: function (res) {
+          showErrorPopup('Error : 관리자에게 문의하세요');
+        }
+      })
+    }
+  }
+  /**
+   *  유저 레벨별 접근 권한 제어
+   */
+  function withdrawLevel() {
+    $('#close_btn').trigger("click");
+    var level = "1";
+    var move = false;
+    if (level == '2') {
+      move = true;
+    }
+    if (move) {
+      withdrawCoin();
+    } else {
+      //이동 실패
+      var message = $('#message');
+      var html = '<p>';
+      html += '보안레벨 2단계 인증을 완료해야<br />출금이 가능합니다.';
+      html += '</p>'
+      message.html(html);
+      $('#error').trigger("click");
+    }
+  }
+  /**
+   * 출금 신청 유효성 체크
+   */
+  function validateWithdraw() {
+    var toAddress = $('#to_address').val();
+    var amount = $('#withdrawal_amount').val();
+    var otpCode = $('#otp_code').val();
+    var securityCode = $('#security_key').val();
+    if (!toAddress) {
+      alert("출금하실 주소를 입력하세요.");
+      return false;
+    } else if (!amount || amount == '0') {
+      alert("보내실 수량을 입력하세요.");
+      return false;
+    } else if (!otpCode) {
+      alert("otpCode");
+      return false;
+    } else if (!securityCode) {
+      alert("보안 비밀번호를 입력하세요.");
+      return false;
+    }
+    return true;
+  }
+  /**
+   * 화면 이동
+   * @param url 이동할 url
+   */
+  function moveUrl(url) {
+    window.location = url;
+  }
+
+  /**
+   * 진입 경로에 따른 탭 선택
+   */
+  function openClick() {
+    var type = '0';
+    if (type == 0) {
+      $('#tab1').trigger('click');
+    } else if (type == 1) {
+      $('#tab2').trigger('click');
+    } else {
+      $('#tab3').trigger('click');
+    }
+  }
+
+  /**
+   * 탭 클릭 핸들러
+   */
+  function tabClickHandler(rel) {
+    if (rel == 'tabWallet_3') {
+      checkLevel1('', '/wallet/detail?coinSymbol=BTC&type=1');
+    }
+  }
+
+  /**
+   * 복사하기
+   */
+  function copyToClipboard() {
+    var dummy = document.createElement("textarea");
+    document.body.appendChild(dummy);
+    dummy.value = '33CVRY9RDGnyxvSk6yg8v8SkdNTwcb7R4F';
+    dummy.select();
+    document.execCommand('copy');
+    document.body.removeChild(dummy);
+    showSuccessPopup("Copied to clipboard.");
+  }
+
+  /**
+   * 최대금액 넣기
+   */
+  function allWithdraw() {
+    if ($("#Withdrawal_all_add").is(":checked")) {
+      var allAmount = 99.899;
+      $('#withdrawal_amount').val(allAmount > 0 ? allAmount : 0);
+    } else {
+      $('#withdrawal_amount').val('0');
+    }
+  }
+</script>
+
+<body>
+  <div id="wrap">
+    <header>
+      <div class="app-inner">
+        <div class="cont-operation">
+          <p class="txt-intro">
+            <a href="javascript:moveUrl('/wallet')">
+              <span class="ico ico-back">back</span>
+            </a>
+          </p>
+        </div>
+        <a class="btn-gnb" href="#">Menu</a>
+      </div>
+      <!-- gnb 화면 -->
+
+      <script type="text/javascript">
+        $(function () {
+          modalUi();
+        })
+
+        function loginOut() {
+          window.location = "/logout";
+        }
+
+        function checkLevel(url) { //  UserVO vo = (UserVO)session.getAttribute("LOGIN");
+          $('#close_btn').trigger("click");
+          var level = "1";
+          var move = false;
+          if (level == '2') {
+            move = true;
+          }
+          if (move) {
+            if (!isEmpty(url)) {
+              window.location = url;
+            }
+          } else {
+            //alert('Please complete Lv.2 verification for using this service');
+            //이동 실패
+            var message = $('#message');
+            var html = '<p>';
+            html += '보안레벨 2단계 인증을 완료해야<br />출금이 가능합니다.';
+            html += '</p>';
+            message.html(html);
+            $('#error').trigger("click");
+          }
+        }
+
+        function checkLevel1(url, returnUrl) {
+          $('#close_btn').trigger("click");
+          var level = "1";
+          var move = false;
+          if (level == '2') {
+            move = true;
+          }
+          if (move) {
+            if (!isEmpty(url)) {
+              window.location = url;
+            }
+          } else {
+            //alert('Please complete Lv.2 verification for using this service');
+            //이동 실패
+            var message = $('#message');
+            var html = '<p>';
+            html += '보안레벨 2단계 인증을 완료해야<br />출금이 가능합니다.';
+            html += '</p>';
+            message.html(html);
+            $('.ok-hide').attr('onclick', 'location.href="' + returnUrl + '"');
+            $('#error').trigger("click");
+          }
+        }
+
+        /**
+         * 에러 팝업 생성
+         * @param msg
+         */
+        function showErrorPopup(msg) {
+          //alert('Please complete Lv.2 verification for using this service');
+          $('#modal-message').text(msg);
+          $('#error').trigger("click");
+        }
+
+        function showSuccessPopup(title, msg) {
+          $('#ok_title').text(title);
+          $('#ok_message').text(msg);
+          $('#show_ok').trigger("click");
+        }
+      </script>
+      <div class="gnb-container">
+				<div class="gnb-header">
+					<div class="user-info">
+						안녕하세요!<br />
+						<span class="user-account">test@pocketmobile.co.kr</span> 님
+					</div>
+					<div class="user-modify">
+						<div>보안 <span>1레벨</span></div>
+						<a href="/account">정보수정</a>
+					</div>
+					<div class="nav-ctl">
+						<a class="ico ico-close" href="#" id="close_btn">Close</a>
+					</div>
+				</div>
+				<div class="gnb-body">
+					<ul class="menu">
+						<li><a href="#">서비스 이용약관</a></li>
+						<li><a href="#">개인정보 보호 정책</a></li>
+					</ul>
+				</div>
+				<div class="gnb-footer">
+					<a href="/logout" class="btn gray">로그아웃</a>
+					<a href="/support?type=1" class="customer">Xprime customer center</a>
+				</div>
+			</div>
+      <a class="agree-btn modalLoad" href="#error_popup" style="display: none" id="error"> test</a>
+      <a class="agree-btn modalLoad" href="#ok_popup" style="display: none" id="show_ok"> test</a>
+      <!-- #wrap e -->
+      <!-- error popup -->
+      <div class="modal" id="error_popup">
+        <div class="modal-inner">
+          <div class="modal-header">
+            <p>
+              <img src="./resources/images/img-notice.png" alt="" style="width:3px;height:17px; display:block; margin:0 auto 6px; bottom:0;">
+              보안 2단계 미인증
+            </p>
+          </div>
+
+          <div class="modal-body">
+            <div class="modal-cont" id="message">
+              <p id="modal-message">
+                This CFD Product is upcoming.<br />
+                Please wait this Product.
+              </p>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <div class="row">
+              <div class="column">
+                <a class="btn" href="#">보안 레벨 2단계 인증</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-controller">
+            <a href="#" class="ico ico-close">close</a>
+          </div>
+        </div>
+      </div>
+      <!-- one button confirm popup -->
+      <div class="modal" id="ok_popup">
+        <div class="modal-inner">
+          <div class="modal-header">
+            <p>
+              <em class="blue" id="ok_title">Change Your Password</em>
+            </p>
+          </div>
+
+          <div class="modal-body">
+            <div class="modal-cont">
+              <p id="ok_message">
+              </p>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <div class="row">
+              <div class="column">
+                <a class="btn ico-close" href="#" id="ok_popup_confirm">OK</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+
+    <div id="container">
+      <section class="app-section wallet white">
+        <div class="sub-main-info">
+          <div class="img-txt">
+            <span>루넥스(RNX)</span>
+            <img src="./resources/images/img-rnx.png" alt="">
+          </div>
+          <div class="token-detail-list">
+            <dl>
+              <dt><span class="red">잔고</span></dt>
+              <dd><span class="red">100.00000000 RNX</span></dd>
+            </dl>
+
+            <dl>
+              <dt>출금가능</dt>
+              <dd><span>99.90000000 RNX</span></dd>
+            </dl>
+
+            <dl>
+              <dt>처리중</dt>
+              <dd><span>0.00000000 RNX</span></dd>
+            </dl>
+
+            <dl>
+              <dt>작업중</dt>
+              <dd><span>0.1000000 RNX</span></dd>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section class="app-section">
+        <div class="app-inner tab-rel">
+          <div class="txt-list-tab type-wallet">
+            <ul>
+              <li id="tab1" rel="tabWallet_1" class="on"><a href="#">내역</a></li>
+              <li id="tab2" rel="tabWallet_2"><a href="#">입금</a></li>
+              <li id="tab3" rel="tabWallet_3"><a href="#">출금</a></li>
+            </ul>
+          </div>
+        </div>
+        <div id="tabWallet" class="tab-component">
+          <!-- History -->
+          <div class="tabWallet_1 tab-content">
+            <form id="frm_sort">
+              <input type="hidden" name="coinSymbol" value="RNX" />
+              <input type="hidden" name="type" value="0" />
+              <input type="hidden" name="transactionType" value="" />
+              <input type="hidden" name="transactionStatus" value="" />
+            </form>
+            <div class="listWalletItem">
+              <div class="item">
+                <div class="top">
+                  <div class="trade">출금</div>
+                  <div class="date">2021. 5. 20 14:03:21</div>
+                </div>
+                <div class="price">1.2323413241 BTC</div>
+                <div class="cont">
+                  <div class="amount">234,567,134 USD</div>
+                  <div class="state ing">처리중</div>
+                </div>
+              </div>
+
+              <div class="item">
+                <div class="top">
+                  <div class="trade">출금</div>
+                  <div class="date">2021. 5. 20 14:03:21</div>
+                </div>
+                <div class="price">1.2323413241 BTC</div>
+                <div class="cont">
+                  <div class="amount">234,567,134 USD</div>
+                  <div class="state complete">완료</div>
+                </div>
+                <div class="transaction">
+                  <div class="title">트랜잭션 ID</div>
+                  <div class="val">x0x3853dl2l0333knedd30203kx0x3853dl2l0333knedd30203kx0x3853dl2l0333knedd30203k…</div>
+                </div>
+              </div>
+
+              <!-- 데이터가 없을 경우 -->
+              <div class="item noData">
+                <div class="cont">조회된 데이터가 없습니다.</div>
+              </div>
+            </div>
+          </div>
+          <!-- Deposit -->
+          <div class="tabWallet_2 tab-content">
+            <div class="app-inner">
+              <!-- 입금 주소 발급하는 경우 -->
+              <div class="qr-code-box">
+                <a href="#" class="btnAdd">입금주소 발급</a>
+                <p>버튼을 클릭하세요!<br />회원님 고유의 입금주소가 발급됩니다.</p>
+              </div>
+              <!-- //입금 주소 발급하는 경우 -->
+              
+              <div class="qr-code-box">
+                <div class="img-box">
+                  <img src="https://chart.googleapis.com/chart?chs=300x300&chld=M&cht=qr&chl=33CVRY9RDGnyxvSk6yg8v8SkdNTwcb7R4F" alt="">
+                </div>
+
+                <form action="">
+                  <div class="input type-btn">
+                    <span>입금주소</span>
+                    <div class="point">x0x3853dl2l0333knedd30203kx0x3853dl2l0333knedd30203kx0x3853dl2l0333knedd30203k…</div>
+                    <a class="btn" href="javascript:copyToClipboard()">복사하기</a>
+                  </div>
+                </form>
+              </div>
+
+              <h4 class="list-guide-tit">유의사항</h4>
+              <ul class="list-guide">
+                <li>위 주소로 RNX만 입금 가능합니다. 해당 주소로 다른 암호화폐를 입금 시도될 경우에 발생할 수 있는 오류 혹은 손실은 복구 불가능합니다.</li>
+                <li>20번의 confinmation이 발생한 이후, 입금 프로세스를 거쳐 잔고에 반영됩니다. 입금 프로세스는 자동으로 진행되며 네트워크 상황에 따라 소요시간이 달라질 수 있습니다.</li>
+                <li>위 주소는 입금 전용 주소입니다.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Withdrawal -->
+          <div class="tabWallet_3 tab-content">
+            <div class="app-inner form-group">
+              <form id="withdraw_frm">
+                <input type="hidden" name="coinSymbol" value="BTC">
+                <div class="form-line">
+                  <div class="input">
+                    <label for="to_address">출금 주소</label>
+                    <input id="to_address" type="text" name="transactionAddress" value="" placeholder="출금 주소를 입력하세요">
+                  </div>
+
+                  <div class="input">
+                    <label for="withdrawal_amount">보낼 수량</label>
+
+                    <div class="label-input">
+                      <input id="withdrawal_amount" type="text" name="transactionAmount" value="" placeholder="0">
+                      <em>RNX</em>
+                    </div>
+                    <div class="row mt10">
+                      <p class="txt-guide">출금 가능 수량 : 100.00000000RNX</p>
+                      <p class="txt-guide"><em class="green">출금 수수료 : 1RNX</em></p>
+                    </div>
+                  </div>
+
+                  <div class="input">
+                    <label for="otp_code">OTP 코드</label>
+                    <!-- class .com 완료  -->
+                    <div class="confirm-input" id="otp_confirm">
+                      <input id="otp_code" type="text" name="otpAuthCode" value="" placeholder="6자리 OTP 인증코드를 입력하세요"
+                        numberOnly maxlength="6">
+                    </div>
+                  </div>
+
+                  <div class="input">
+                    <label for="security_key">보안 비밀번호</label>
+                    <input id="security_key" type="text" name="securityCode" value="" placeholder="6자리 보안 비밀번호를 입력하세요"
+                      numberOnly maxlength="6">
+                  </div>
+                </div>
+
+                <h4 class="list-guide-tit">유의사항</h4>
+                <ul class="list-guide">
+                  <li>최종 출금 처리는  출금 오류 및 금융사고 방지를 위해 담당자 승인 후  처리됩니다. </li>
+                </ul>
+
+                <div class="button mt30">
+                  <a class="btn green" href="javascript:withdrawLevel()">출금신청</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <!-- #wrap e -->
+  <a class="agree-btn modalLoad" href="#error_popup" style="display: none" id="error"> test</a>
+  <!-- #wrap e -->
+</body>
+
+</html>
