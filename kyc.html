@@ -405,10 +405,6 @@
                   <label for="passport" class="js-labelFile">
                     <span class="js-fileName" id="passport_upload">업로드</span>
                   </label>
-
-                  <div class="upload-preview">
-                    <img src="./resources/images/passport.png" alt="업로드된 사진" id="passport_img">
-                  </div>
                 </div>
                 <div class="cont">
                   <div class="title">여권 앞면 사진</div>
@@ -423,10 +419,6 @@
                   <label for="passport_self" class="js-labelFile">
                     <span class="js-fileName" id="passport_self_upload">업로드</span>
                   </label>
-
-                  <div class="upload-preview">
-                    <img src="./resources/images/passport.png" alt="업로드된 사진" id="passport_img">
-                  </div>
                 </div>
                 <div class="cont">
                   <div class="title">여권을 들고있는 본인사진</div>
@@ -445,9 +437,8 @@
                     $input.on('change', function (element) {
                       var fileName = '';
                       if (element.target.value) fileName = element.target.value.split('\\').pop();
-                      fileName ? $label.addClass('has-file').find('.js-fileName').html(fileName) :
+                      fileName ? $label.addClass('has-file').find('.js-fileName').html("업로드 완료") :
                         $label.removeClass('has-file').html(labelVal);
-                      $(this).parent().addClass("is-change");
                     });
                   });
 
