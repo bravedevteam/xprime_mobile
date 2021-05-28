@@ -2,6 +2,7 @@
 <html lang="ko">
 
 <head>
+
   <title>bank X</title>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -39,21 +40,17 @@
    * 페이지 로드시 처리해야할 스크립트 정의
    */
   $(function () {
-    // setButton();
+    //인증코드 확인 버튼 활성화
+    $('#otp_code').on("change paste keyup", function () {
+      var authCode = $(this).val();
+      var confirmBtn = document.getElementById('otp_confirm');
+      if (authCode.length === 6) {
+        confirmBtn.disabled = false;
+      } else {
+        confirmBtn.disabled = 'disabled';
+      }
+    })
   })
-
-  function setButton() {
-    var otpCode = 'u4EHBSqukNtAskYKPhEgr9I3afmWL9XSKiFdBmDc8Tg=';
-    var securityCode = '/vBWeIGnycj8P41dWMT/Wg==';
-    var userName = '';
-    var userLevel = '1';
-    if (!otpCode) {
-      $('#security_btn').prop("disabled", true);
-      $('#kyc_btn').prop("disabled", true);
-    } else if (!securityCode) {
-      $('#kyc_btn').prop("disabled", true);
-    }
-  }
   /**
    * 화면 이동
    * @param url 이동할 url
@@ -61,19 +58,55 @@
   function moveUrl(url) {
     window.location = url;
   }
+  /**
+   * 복사하기
+   */
+  function copyToClipboard() {
+    var dummy = document.createElement("textarea");
+    document.body.appendChild(dummy);
+    dummy.value = 'RPCG3LDK5XDQKJSM';
+    dummy.select();
+    document.execCommand('copy');
+    document.body.removeChild(dummy);
+    showSuccessPopup("Copied to clipboard.");
+  }
+
+  /**
+   * 구글 otp 인증코드 확인
+   */
+  function confirmOTP() {
+    $.ajax({
+      type: 'POST',
+      url: '/verify/otpCheck',
+      data: $('#otp_frm').serialize(),
+      dataType: 'json',
+      success: function (res) {
+        if (ajaxResponse(res) && res.body.result == '0000') {
+          alert("Success!");
+          moveUrl('/verify');
+        } else {
+          alert("FAIL!");
+        }
+      },
+      error: function (res) {
+        showErrorPopup('Error : 관리자에게 문의하세요');
+      }
+    })
+  }
 </script>
 
-<body>
+<body class="white">
   <div id="wrap">
     <header>
-      <div class="app-inner transparent">
+      <div class="app-inner">
         <div class="cont-operation">
           <p class="txt-intro">
-            <a href="javascript:historyBack()">
+            <a href="javascript:moveUrl('/verify')">
               <span class="ico ico-back">back</span>
             </a>
           </p>
         </div>
+        <a class="btn-gnb" href="#">Menu</a>
       </div>
       <!-- gnb 화면 -->
 
@@ -149,6 +182,31 @@
           $('#show_ok').trigger("click");
         }
       </script>
+      <div class="gnb-container">
+				<div class="gnb-header">
+					<div class="user-info">
+						안녕하세요!<br />
+						<span class="user-account">test@pocketmobile.co.kr</span> 님
+					</div>
+					<div class="user-modify">
+						<div>보안 <span>1레벨</span></div>
+						<a href="/account">정보수정</a>
+					</div>
+					<div class="nav-ctl">
+						<a class="ico ico-close" href="#" id="close_btn">Close</a>
+					</div>
+				</div>
+				<div class="gnb-body">
+					<ul class="menu">
+						<li><a href="#">서비스 이용약관</a></li>
+						<li><a href="#">개인정보 보호 정책</a></li>
+					</ul>
+				</div>
+				<div class="gnb-footer">
+					<a href="/logout" class="btn gray">로그아웃</a>
+					<a href="/support?type=1" class="customer">bank X customer center</a>
+				</div>
+			</div>
       <a class="agree-btn modalLoad" href="#error_popup" style="display: none" id="error"> test</a>
       <a class="agree-btn modalLoad" href="#ok_popup" style="display: none" id="show_ok"> test</a>
       <!-- #wrap e -->
@@ -178,6 +236,7 @@
               </div>
             </div>
           </div>
+
 
           <div class="modal-controller">
             <a href="#" class="ico ico-close">close</a>
@@ -212,38 +271,53 @@
     </header>
     <div id="container">
       <section class="app-section">
-        <h3 class="verification-tit">test@pocketmobile.co.kr 님<br /><span>보안등급 <em class="green">1레벨</em></span></h3>
-        <div class="app-inner app-article">
-          <div class="verification-list">
-            <ul>
-              <!-- 각 레벨별 진행도에 따라 on 클래스 추가로 활성화 -->
-              <li class="lv lv1 on">
-                <div class="titVerification">보안 <span>1레벨</span></div>
-                <dl>
-                  <dt>이메일 인증</dt>
-                  <dd>test@pocketmobile.co.kr</dd>
-                </dl>
-                <span class="txt-status completed">
-                  완료
-                </span>
-              </li>
-              <li class="lv lv2">
-                <div class="titVerification">보안 <span>2레벨</span></div>
-                <dl>
-                  <dt>OTP 설정</dt>
-                  <dd>Google OTP</dd>
-                </dl>
-                <a class="btn small" href="javascript:moveUrl('/verify/otp')">설정하기</a>
-              </li>
-              <li class="lv lv3">
-                <div class="titVerification">보안 <span>3레벨</span></div>
-                <dl>
-                  <dt>KYC 실명인증</dt>
-                  <dd>여권 & 본인사진 업로드</dd>
-                </dl>
-                <a class="btn small" href="javascript:moveUrl('/verify/kyc')" id="kyc_btn">설정하기</a>
-              </li>
-            </ul>
+        <div class="app-inner">
+          <div class="info-container vertical-layout">
+            <div class="vertical-layout-inner">
+              <h3 class="otp">OTP 설정</h3>
+              <p>OTP인증을 위해 아래 스토어에서 앱을 설치하세요.</p>
+            </div>
+          </div>
+          <div class="row btn-row pb15 pt15">
+            <div class="column"><a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank"><img src="./resources/images/btn-googlePlay.png" alt="app store"></a></div>
+            <div class="column"><a href="https://itunes.apple.com/app/google-authenticator/id388497605" target="_blank"><img src="./resources/images/btn-appStore.png" alt="app store"></a></div>
+          </div>
+        </div>
+        <hr class="section-space" />
+        <div class="app-inner">
+          
+          <form id="otp_frm">
+            <div class="qr-code-box">
+              <div class="title">OTP 등록 코드</div>
+              <div class="img-box">
+                <img id="qr_img"
+                  src="https://chart.googleapis.com/chart?chs=300x300&chld=M&cht=qr&chl=otpauth%3A%2F%2Ftotp%2FPRIME%28test%40pocketmobile.co.kr%29%3Fsecret%3DRPCG3LDK5XDQKJSM"
+                  alt="">
+              </div>
+
+              <div class="input type-btn">
+                <input id="secret_key" type="text" name="otpNumber" value="RPCG3LDK5XDQKJSM" readonly=""
+                  style="width: calc(100% - 94px);">
+                <a class="btn" href="javascript:copyToClipboard()">복사</a>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-line">
+                <div class="input">
+                  <label>OTP 인증코드</label>
+                  <!-- 기본 -->
+                  <div class="confirm-input">
+                    <input id="otp_code" type="text" name="otpCode" value="" placeholder="6자리 OTP인증코드를 입력하세요.">
+                  </div>
+                  <!-- class 기존에러 input.invalid에서 상위요소에 .fail 추가해주세요 -->
+                  <!-- class .com 완료  -->
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="button">
+            <!-- input .com일 경우 disabled 해제 -->
+            <button id="otp_confirm" class="btn" disabled onclick="confirmOTP()">확인</button>
           </div>
         </div>
       </section>

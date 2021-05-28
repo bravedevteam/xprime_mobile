@@ -2,15 +2,15 @@
 <html lang="ko">
 
 <head>
-  <title>XPrime</title>
+  <title>bank X</title>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-  <meta name="title" content="XPrime" />
+  <meta name="title" content="bank X" />
   <meta property="og:type" content="website">
-  <meta property="og:title" content="XPrime">
-  <meta property="og:description" content="XPrime" />
+  <meta property="og:title" content="bank X">
+  <meta property="og:description" content="bank X" />
 
   <!-- TODO: library -->
   <script src="./resources/js/lib/jquery.min.js"></script>
@@ -159,13 +159,13 @@
     } else if (!isCheckPassword()) {
       return false;
     } else if (!agree1) {
-      showErrorPopup("Xprime 이용약관과 개인정보 수집 및 이용에 대한 안내 모두 동의해주세요.");
+      showErrorPopup("bank X 이용약관과 개인정보 수집 및 이용에 대한 안내 모두 동의해주세요.");
       return false;
     } else if (!agree2) {
-      showErrorPopup("Xprime 이용약관과 개인정보 수집 및 이용에 대한 안내 모두 동의해주세요.");
+      showErrorPopup("bank X 이용약관과 개인정보 수집 및 이용에 대한 안내 모두 동의해주세요.");
       return false;
     } else if (!agree3) {
-      showErrorPopup("Xprime 이용약관과 개인정보 수집 및 이용에 대한 안내 모두 동의해주세요.");
+      showErrorPopup("bank X 이용약관과 개인정보 수집 및 이용에 대한 안내 모두 동의해주세요.");
       return false;
     }
     return true;
@@ -383,12 +383,12 @@
     $('#terms_fee_kr').hide();
     if (type == 'P') {
       $('#terms_privacy_en').show();
-      $('#terms_title').text("Xprime 개인정보 처리방침");
+      $('#terms_title').text("bank X 개인정보 처리방침");
     } else if (type == 'U') {
       $('#terms_privacy_en').show();
     } else if (type == 'T') {
       $('#terms_service_en').show();
-      $('#terms_title').text("Xprime 서비스 이용약관");
+      $('#terms_title').text("bank X 서비스 이용약관");
     } else if (type == 'F') {
       $('#terms_fee_en').show();
       $('#terms_title').text("Fees Policy");
@@ -430,7 +430,7 @@
               <div class="vertical-layout-inner">
                 <h3 class="join">회원가입</h3>
                 <p>
-                  Xprime에 오신걸 환영합니다.
+                  bank X에 오신걸 환영합니다.
                 </p>
               </div>
             </div>
@@ -493,7 +493,7 @@
                   <li>
                     <div class="check">
                       <input id="agree1" type="checkbox" name="isServices" value="">
-                      <label for="agree1">Xprime 이용약관 동의(필수)</label>
+                      <label for="agree1">bank X 이용약관 동의(필수)</label>
                     </div>
                     <a class="agree-btn" href="javascript:showTerms('T')"></a>
                     <div class="modal" id="agreePopup1">
