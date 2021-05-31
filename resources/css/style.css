@@ -200,6 +200,8 @@ i { font-style: italic }
 .mt30 { margin-top:30px !important; }
 
 .mb20 { margin-bottom:20px !important; }
+.mb30 { margin-bottom:30px !important; }
+.mb40 { margin-bottom:40px !important; }
 .mb50 { margin-bottom:50px !important; }
 
 .pt15 { padding-top:15px !important; }
@@ -793,12 +795,12 @@ border-left: 1px solid #f4f6f9
 .ico-calendar { width:45px; }
 .ico-calendar:before { width: 15px; height: 17px; background: url(../images/ico-calendar.png) no-repeat center; -webkit-background-size: contain; background-size: contain }
 
-.btn { display: block; min-width: 100%; min-height: 60px; padding: 15px 10px 13px; text-align: center; color: #fff; background-color: #0091ff; font-size: 18px; font-weight: 500; -webkit-transition: all .2s; -o-transition: all .2s; transition: all .2s; -webkit-border-radius: 14px; border-radius: 12px }
+.btn { display: block; min-width: 100%; min-height: 60px; padding: 14px 10px 12px; text-align: center; color: #fff; background-color: #0091ff; font-size: 18px; font-weight: 500; -webkit-transition: all .2s; -o-transition: all .2s; transition: all .2s; -webkit-border-radius: 14px; border-radius: 12px }
 .btn.natural { background-color: #f5f6f8; color: #5b66ff }
 .btn.gray { background-color:#8e8e93; }
 .btn.natural-negative { background-color: #f5f6f8; color: #f01847 }
 .btn.negative { background-color: #f01847 }
-.btn.positive { background: #fff; border: 1px solid #5b66ff; color: #5b66ff }
+.btn.positive { background: #fff; border: 1px solid #0091ff; color: #0091ff }
 .btn.more { color: #5b66ff; font-size: 12px; min-width: 66px; font-weight: 400; width: 66px; margin: 12px auto auto auto; min-height: 20px; background-color: #fff; border: 1px solid #5b66ff; -webkit-border-radius: 50px; border-radius: 50px; padding: 1px 10px 0; position: relative }
 .btn.more:after { content: ''; display: inline-block; margin-left: 4px; width: 6px; height: 5px; background: url(../images/arrow-more-b.png) no-repeat; -webkit-background-size: contain; background-size: contain; position: relative; bottom: 1px }
 .btn.middle { display: inline-block; min-width: 64px; width: 64px; min-height: 30px; text-align: center; padding: 2px 4px 0; -webkit-border-radius: 2px; border-radius: 2px }
@@ -891,7 +893,7 @@ footer .sns-list ul li a.fb { width: 8px; background: url(../images/ico-fb.png) 
 footer .sns-list ul li a.te { width: 14px; background: url(../images/ico-te.png) no-repeat center; -webkit-background-size: contain; background-size: contain }
 footer .sns-list ul li a.mm { width: 16px; background: url(../images/ico-mm.png) no-repeat center; -webkit-background-size: contain; background-size: contain }
 
-.logo { width:65px; height:20px }
+.logo { width:82px; height:26px }
 
 .logo a { display: block; width: 100%; height: 100%; text-indent: -9999px; background: url(../images/logo-xtock.png) no-repeat center; -webkit-background-size: contain; background-size: contain; }
 .product-list ul li { padding: 12px; background: #fff; -webkit-border-radius: 10px; border-radius: 10px; overflow: hidden }
@@ -1127,6 +1129,7 @@ bottom: 0 }
 .info-container h3.join { padding-top:32px; background:url('../images/iconJoin.png') center top no-repeat; background-size:20px auto; font-size:23px; line-height:1; }
 .info-container h3.kyc { padding-top:32px; background:url('../images/icon-kyc.png') center top no-repeat; background-size:18px auto; font-size:23px; line-height:1; }
 .info-container h3.otp { padding-top:22px; background:url('../images/iconOTP.png') center top no-repeat; background-size:22px auto; font-size:23px; line-height:1; }
+.info-container h3.pass { padding-top:30px; background:url('../images/iconUserModify.png') center top no-repeat; background-size:25px auto; font-size:23px; line-height:1; }
 
 .info-container .number { font-size: 28px; font-weight: 500; letter-spacing: .25px }
 .info-container .number span { margin-left:5px; font-size:18px; }
