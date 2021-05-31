@@ -196,6 +196,7 @@ i { font-style: italic }
 
 .mt5 { margin-top:5px !important; }
 .mt10 { margin-top:10px !important; }
+.mt15 { margin-top:15px !important; }
 .mt20 { margin-top:20px !important; }
 .mt30 { margin-top:30px !important; }
 
@@ -1129,7 +1130,7 @@ bottom: 0 }
 .info-container h3.join { padding-top:32px; background:url('../images/iconJoin.png') center top no-repeat; background-size:20px auto; font-size:23px; line-height:1; }
 .info-container h3.kyc { padding-top:32px; background:url('../images/icon-kyc.png') center top no-repeat; background-size:18px auto; font-size:23px; line-height:1; }
 .info-container h3.otp { padding-top:22px; background:url('../images/iconOTP.png') center top no-repeat; background-size:22px auto; font-size:23px; line-height:1; }
-.info-container h3.pass { padding-top:30px; background:url('../images/iconUserModify.png') center top no-repeat; background-size:25px auto; font-size:23px; line-height:1; }
+.info-container h3.pass { padding-top:30px; background:url('../images/icon-pass.png') center top no-repeat; background-size:16px auto; font-size:23px; line-height:1; }
 
 .info-container .number { font-size: 28px; font-weight: 500; letter-spacing: .25px }
 .info-container .number span { margin-left:5px; font-size:18px; }
