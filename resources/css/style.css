@@ -5,7 +5,7 @@
 
 :after, :before { -webkit-box-sizing: border-box; box-sizing: border-box }
 
-body, button, code, dd, div, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, input, legend, li, ol, p, pre, select, td, textarea, th, ul { margin: 0; padding: 0 }
+body, button, code, dd, div, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, input, legend, li, ol, p, pre, select, td, textarea, th, ul { margin: 0; padding: 0; -webkit-tap-highlight-color:transparent; }
 dl, li, menu, ol, ul { list-style: none }
 address, caption, code, em, var { font-style: normal }
 fieldset, iframe, img { border: 0 none }
