@@ -807,7 +807,7 @@ border-left: 1px solid #f4f6f9
 .btn.more:after { content: ''; display: inline-block; margin-left: 4px; width: 6px; height: 5px; background: url(../images/arrow-more-b.png) no-repeat; -webkit-background-size: contain; background-size: contain; position: relative; bottom: 1px }
 .btn.middle { display: inline-block; min-width: 64px; width: 64px; min-height: 30px; text-align: center; padding: 2px 4px 0; -webkit-border-radius: 2px; border-radius: 2px }
 .btn.rounded { color: #9a9b9d; font-size: 10px; font-weight: 400; -webkit-border-radius: 50px; border-radius: 50px; border: 1px solid #9a9b9d; background: 0 0; min-width: 54px; padding: 0; min-height: 20px; line-height: 20px }
-.btn.small { display:inline-block; min-width:85px; min-height:28px; height:28px; padding:3px 10px 3px; background-color:#ebebec; line-height:28px; border-radius:7px; font-size:15px; font-weight:400; color:#000; }
+.btn.small { display:inline-block; min-width:85px; min-height:28px; height:28px; padding:0 10px; background-color:#ebebec; line-height:28px; border-radius:7px; font-size:15px; font-weight:400; color:#000; }
 .btn.small+.btn.small { margin-left:12px; }
 .btn.green { background-color:#21ce84; color:#fff; }
 
@@ -1142,7 +1142,7 @@ bottom: 0 }
 .info-container+.form-group { margin-top: 40px }
 .info-container+.form-group.margin { margin-top: 16px }
 
-.btm-container { position: static; margin-top: 44px; width: 100%; left: 0; bottom: 16px }
+.btm-container { margin-top: 44px; width: 100%; padding-bottom:20px; }
 
 .nav-side { text-align: center }
 .nav-side.centered ul { margin-left: 10px }
