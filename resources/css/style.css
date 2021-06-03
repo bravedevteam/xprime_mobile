@@ -1237,7 +1237,7 @@ bottom: 0 }
 .listWalletItem .item.noData { height:300px; display:flex; align-items:center; justify-content:center; }
 .listWalletItem .item.noData .cont { padding-top:26px; background:url(../images/iconSearchBlack.png) center top no-repeat; background-size:18px auto; text-align:center; color:#000; font-size:15px; font-weight:500; }
 
-.qr-code-box { padding-top:15px; margin-bottom:40px; border-radius:25px; background:#fff; text-align: center; }
+.qr-code-box { padding:40px 24px; margin-bottom:40px; border-radius:25px; background:#fff; text-align: center; }
 .qr-code-box .title { margin-bottom:16px; font-size:18px; font-weight:500; color:#000; line-height:1.2; }
 .qr-code-box .btnAdd { width:116px; height:116px; margin-bottom:25px; display:inline-block; background:url(../images/iconAddBlack.png) center center no-repeat #ebebec; border-radius:25px; background-size:24px auto; font-size:0; text-indent:-9999px; }
 .qr-code-box p { font-size:15px; font-weight:500; color:#000; line-height:1.4; }
@@ -1247,6 +1247,8 @@ bottom: 0 }
 .qr-code-box .input span { display:block; text-align:left; color:#000; font-size:13px; font-weight:500; }
 .qr-code-box .point { margin-bottom:20px; text-align:left; line-height:1.1; font-size:13px; color:#8e8e93; word-break:break-all; }
 .qr-code-box .btn { float:none; display:inline-block; }
+
+#otp_frm .qr-code-box { padding:5px 24px 0; }
 
 .interaction-scroll { height: 400px; overflow-y: auto }
 
