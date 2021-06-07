@@ -287,6 +287,7 @@ function modalUi(){
 	modalSizing();
 	function modalSizing(){
 		$('.modal').each(function(){
+			console.log('111')
 			var layerResize = $(window).height();
 			var layerHeight = $(this).outerHeight();
 			var layerWidth = $(this).outerWidth();
@@ -323,7 +324,11 @@ function modalUi(){
 				if (modalLength > 1) {
 					$target.fadeOut(250);
 				} else {
-					removeDim();
+					if($(".gnb-container").hasClass("active")){
+						$(".dim").css("z-index", "99996");
+					}else{
+						removeDim();
+					}
 				}
 			}
 		});
