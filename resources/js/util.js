@@ -287,7 +287,6 @@ function modalUi(){
 	modalSizing();
 	function modalSizing(){
 		$('.modal').each(function(){
-			console.log('111')
 			var layerResize = $(window).height();
 			var layerHeight = $(this).outerHeight();
 			var layerWidth = $(this).outerWidth();
